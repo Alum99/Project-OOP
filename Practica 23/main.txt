@@ -1,0 +1,61 @@
+# Листовой элемент — отдельный солдат
+class Soldier: # класс представляет отдельного солдата
+    def __init__(self, name): # конструктор
+        self.name = name # имя солдата
+
+    def march(self): # команда марш
+        print(f"{self.name} марширует!") # конкретный солдат выполняет команду
+
+# Компоновщик — подразделение (взвод, рота и т.д.)
+class Unit:
+    def __init__(self, name):
+        self.name = name # название подразделения
+        self.members = [] # список дочерних
+
+    def add(self, member): # добавляет элемент в список members
+        self.members.append(member)
+
+    def remove(self, member): # удаляет элемент из подразделения
+        self.members.remove(member)
+
+    def march(self): # марш для компоновщика
+        print(f"Подразделение '{self.name}' начинает марш:")
+        for member in self.members:
+            member.march()  # Рекурсивно вызываем march для всех членов
+        print(f"Подразделение '{self.name}' закончил марш.\n")
+# одинаковая команда выполняется как для одного солдата, так и для группы.
+
+
+# Демонстрация работы
+if __name__ == "__main__":
+    # Отдельные солдаты
+    soldier1 = Soldier("Дмитрий")
+    soldier2 = Soldier("Пётр")
+    soldier3 = Soldier("Владимир")
+    soldier4 = Soldier("Михаил")
+
+    # Создаем взвод
+    platoon1 = Unit("Взвод 1")  # Взвод — компоновщик, который управляет своими членами
+    platoon1.add(soldier1) # добавляю Дмитрия
+    platoon1.add(soldier2) # добавляю Петра
+
+    # Создаем другой взвод
+    platoon2 = Unit("Взвод 2")
+    platoon2.add(soldier3) # добавляю Владимира
+    platoon2.add(soldier4) # добавляю Михаила
+
+    # Создаем роту, которая включает оба взвода
+    company = Unit("Рота")
+    company.add(platoon1)
+    company.add(platoon2)
+    # Рота — компоновщик более высокого уровня,
+
+    # Отдаем команды
+    print("Команда для одного солдата:")
+    soldier1.march()
+
+    print("\nКоманда для взвода:")
+    platoon1.march()
+
+    print("\nКоманда для всей роты:")
+    company.march()
