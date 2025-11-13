@@ -1,0 +1,85 @@
+# Глобальные переменные
+units = {}      # хранит подразделения (ключ — имя, значение — список участников)
+soldiers = []   # список всех солдат
+
+
+# Функции
+# Создать солдата
+def create_soldier(name):
+    """Создаёт солдата и добавляет его в общий список."""
+    soldier = {"type": "soldier", "name": name}  # создаём словарь с типом и именем
+    soldiers.append(soldier["name"])             # добавляем имя в общий список
+    return soldier                               # возвращаем словарь с данными солдата
+
+
+# Создать подразделение
+def create_unit(name):
+    """Создаёт подразделение и добавляет его в словарь units."""
+    if name not in units:                        # проверяем, что подразделения с таким именем нет
+        units[name] = []                         # создаём запись: подразделение — пустой список участников
+    return {"type": "unit", "name": name}        # возвращаем словарь с типом и именем
+
+
+# Добавить участника в подразделение
+def add_member(unit, member):
+    """Добавляет солдата или подразделение в состав другого подразделения."""
+    unit_name = unit["name"]                     # получаем имя подразделения
+    if unit_name in units:                       # проверяем, существует ли оно
+        units[unit_name].append(member)          # добавляем участника в список
+    else:
+        print(f"Ошибка: подразделение '{unit_name}' не найдено!")  # сообщение об ошибке
+
+
+# Удалить участника из подразделения
+def remove_member(unit, member):
+    """Удаляет участника из подразделения, если он там есть."""
+    unit_name = unit["name"]
+    if unit_name in units and member in units[unit_name]:
+        units[unit_name].remove(member)
+    else:
+        print(f"Ошибка: невозможно удалить {member} из {unit_name}")
+
+
+# Команда "марш"
+def march(member):
+    """Отдаёт команду марш для солдата или подразделения."""
+    if member["type"] == "soldier": # если солдат
+        print(f"{member['name']} марширует!")
+    elif member["type"] == "unit": # если подразделение
+        print(f"Подразделение '{member['name']}' начинает марш:")
+        for m in units[member["name"]]:          # обходим всех людей/групп подразделения
+            march(m)                             # рекурсивно выполняем march для каждого
+        print(f"Подразделение '{member['name']}' закончил марш.\n")
+
+
+# ===== Демонстрация работы =====
+if __name__ == "__main__":
+    # Создаём солдат
+    soldier1 = create_soldier("Дмитрий")
+    soldier2 = create_soldier("Пётр")
+    soldier3 = create_soldier("Владимир")
+    soldier4 = create_soldier("Михаил")
+
+    # Создаём взводы
+    platoon1 = create_unit("Взвод 1")
+    add_member(platoon1, soldier1)
+    add_member(platoon1, soldier2)
+
+    platoon2 = create_unit("Взвод 2")
+    add_member(platoon2, soldier3)
+    add_member(platoon2, soldier4)
+
+    # Создаём роту
+    company = create_unit("Рота")
+    add_member(company, platoon1)
+    add_member(company, platoon2)
+
+    # Команды
+    print("Команда для одного солдата:")
+    march(soldier1)
+
+    print("\nКоманда для взвода:")
+    march(platoon1)
+
+    print("\nКоманда для всей роты:")
+    march(company)
