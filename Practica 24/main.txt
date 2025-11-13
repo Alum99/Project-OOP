@@ -2,17 +2,69 @@
 units = {}      # хранит подразделения (ключ — имя, значение — список участников)
 soldiers = []   # список всех солдат
 
-# Функции
 
+# Функции
 # Создать солдата
+def create_soldier(name):
+    soldiers.append(name) # добав имя солдата в глобальный список
+    return {"type": "soldier", "name": name} # словарь с типом и именем
+
 
 # Создать подразделение
+def create_unit(name):
+    units[name] = [] # запись по ключу name
+    return {"type": "unit", "name": name} # словаь с подразделением и именем
+
 
 # Добавить участника в подразделение
+def add_member(unit, member):
+    units[unit["name"]].append(member) # формируется иерархия
+
 
 # Удалить участника из подразделения
+def remove_member(unit, member):
+    units[unit["name"]].remove(member) # удаление member из списка участников подразделения
+
 
 # Команда "марш"
+def march(member): # принимает либо словарь-солдат, либо словарь-подразделение
+    if member["type"] == "soldier": # если это солдат
+        print(f"{member['name']} марширует!") # печатаем строку одного вида
+    elif member["type"] == "unit": # если это подразделение
+        print(f"Подразделение '{member['name']}' начинает марш:") # печатаем строку другого вида
+        for m in units[member["name"]]: # проходим по списку участников этого подразделения
+            march(m)  # рекурсивно для всех участников, как для солдат, так и для подразделения
+        print(f"Подразделение '{member['name']}' закончил марш.\n") # печатаем строку третьего вида
 
-# === Демонстрация работы ===
-if __name__ == "__main__":
+
+# Демонстрация работы
+if __name__ == "__main__": # блок выполняется только если файл запускают напрямую, а не импортируют как модуль
+    # Создаём солдат
+    soldier1 = create_soldier("Дмитрий")
+    soldier2 = create_soldier("Пётр")
+    soldier3 = create_soldier("Владимир")
+    soldier4 = create_soldier("Михаил")
+
+    # Создаём взводы
+    platoon1 = create_unit("Взвод 1")
+    add_member(platoon1, soldier1)
+    add_member(platoon1, soldier2)
+
+    platoon2 = create_unit("Взвод 2")
+    add_member(platoon2, soldier3)
+    add_member(platoon2, soldier4)
+
+    # Создаём роту
+    company = create_unit("Рота")
+    add_member(company, platoon1)
+    add_member(company, platoon2)
+
+    # Команды
+    print("Команда для одного солдата:")
+    march(soldier1)
+
+    print("\nКоманда для взвода:")
+    march(platoon1)
+
+    print("\nКоманда для всей роты:")
+    march(company)
