@@ -1,0 +1,83 @@
+# Component # базовый класс для всех компонентов системы
+class Component:
+    def march(self):
+        raise NotImplementedError("Метод march должен быть реализован")
+
+    def add(self, member): # метод для добавления дочерних элементов
+        raise NotImplementedError("Метод add должен быть реализован")
+
+    def remove(self, member): # метод для удаления дочерних элементов
+        raise NotImplementedError("Метод remove должен быть реализован")
+
+
+# Leaf - Soldier
+class Soldier(Component):
+    def __init__(self, name):
+        self.name = name # сохраняет имя в поле объекта
+
+    def march(self):
+        print(f"{self.name} марширует!")
+
+    def add(self, member):
+        raise NotImplementedError("Солдат не может содержать других участников")
+
+    def remove(self, member):
+        raise NotImplementedError("Солдат не может удалять других участников")
+
+
+# Composite - Unit
+class Unit(Component):
+    def __init__(self, name):
+        self.name = name 
+        self.members = []  # children *
+
+    def add(self, member):
+        self.members.append(member)
+
+    def remove(self, member):
+        self.members.remove(member)
+
+    def march(self):
+        print(f"Подразделение '{self.name}' начинает марш:")
+        for member in self.members:
+            member.march()  # Рекурсивный вызов для всех детей
+        print(f"Подразделение '{self.name}' закончил марш.\n")
+
+
+# Демонстрация работы
+if __name__ == "__main__":
+    # Создаём солдат (Leaf)
+    soldier1 = Soldier("Дмитрий")
+    soldier2 = Soldier("Пётр")
+    soldier3 = Soldier("Владимир")
+    soldier4 = Soldier("Михаил")
+
+    # Создаём взводы (Composite)
+    platoon1 = Unit("Взвод 1")
+    platoon1.add(soldier1)
+    platoon1.add(soldier2)
+
+    platoon2 = Unit("Взвод 2")
+    platoon2.add(soldier3)
+    platoon2.add(soldier4)
+
+    # Создаём роту (Composite высшего уровня)
+    company = Unit("Рота")
+    company.add(platoon1)
+    company.add(platoon2)
+
+    # Команды
+    print("Команда для одного солдата:")
+    soldier1.march()
+
+    print("\nКоманда для взвода:")
+    platoon1.march()
+
+    print("\nКоманда для всей роты:")
+    company.march()
+
+    # Демонстрация ошибки при попытке добавить к солдату
+    try:
+        soldier1.add(soldier2)
+    except NotImplementedError as e:
+        print(f"\nОшибка: {e}")
