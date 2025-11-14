@@ -1,85 +1,76 @@
 # Глобальные переменные
-units = {}      # хранит подразделения (ключ — имя, значение — список участников)
-soldiers = []   # список всех солдат
+soldiers = []      # общий список всех солдат
+units = {}         # подразделения: имя подразделения - список солдат
 
 
 # Функции
-# Создать солдата
-def create_soldier(name):
-    """Создаёт солдата и добавляет его в общий список."""
-    soldier = {"type": "soldier", "name": name}  # создаём словарь с типом и именем
-    soldiers.append(soldier["name"])             # добавляем имя в общий список
-    return soldier                               # возвращаем словарь с данными солдата
+
+def create_soldier(name): # Создание солдата
+    soldier = {"name": name} # Создаётся словарь-солдат
+    soldiers.append(soldier) # общий список всех солдат
+    return soldier
 
 
-# Создать подразделение
-def create_unit(name):
-    """Создаёт подразделение и добавляет его в словарь units."""
-    if name not in units:                        # проверяем, что подразделения с таким именем нет
-        units[name] = []                         # создаём запись: подразделение — пустой список участников
-    return {"type": "unit", "name": name}        # возвращаем словарь с типом и именем
+def create_unit(name):   # Создание подразделения (только список солдат, без вложений)
+    units[name] = []     # каждое подразделение содержит только солдат
+    return name          # Возвращается строка — имя подразделения
 
 
-# Добавить участника в подразделение
-def add_member(unit, member):
-    """Добавляет солдата или подразделение в состав другого подразделения."""
-    unit_name = unit["name"]                     # получаем имя подразделения
-    if unit_name in units:                       # проверяем, существует ли оно
-        units[unit_name].append(member)          # добавляем участника в список
+def add_soldier_to_unit(unit_name, soldier): # Добавляет солдата в подразделение
+    if unit_name in units: # существует ли подразделение
+        units[unit_name].append(soldier) # добавляем солдата в его список
     else:
-        print(f"Ошибка: подразделение '{unit_name}' не найдено!")  # сообщение об ошибке
+        print(f"Ошибка: подразделения '{unit_name}' не существует")
 
 
-# Удалить участника из подразделения
-def remove_member(unit, member):
-    """Удаляет участника из подразделения, если он там есть."""
-    unit_name = unit["name"]
-    if unit_name in units and member in units[unit_name]:
-        units[unit_name].remove(member)
+def remove_soldier_from_unit(unit_name, soldier):          # Удаляет солдата из подразделения
+    if unit_name in units and soldier in units[unit_name]: # существует ли подразделение и есть ли солдат внутри него
+        units[unit_name].remove(soldier)                   # Удаляем солдата
     else:
-        print(f"Ошибка: невозможно удалить {member} из {unit_name}")
+        print("Ошибка: убрать солдата невозможно")
 
 
-# Команда "марш"
-def march(member):
-    """Отдаёт команду марш для солдата или подразделения."""
-    if member["type"] == "soldier": # если солдат
-        print(f"{member['name']} марширует!")
-    elif member["type"] == "unit": # если подразделение
-        print(f"Подразделение '{member['name']}' начинает марш:")
-        for m in units[member["name"]]:          # обходим всех людей/групп подразделения
-            march(m)                             # рекурсивно выполняем march для каждого
-        print(f"Подразделение '{member['name']}' закончил марш.\n")
+def march_soldier(soldier): #  Команда марш одному солдату
+    print(f"{soldier['name']} марширует!")
 
 
-# ===== Демонстрация работы =====
+def march_unit(unit_name): #  Команда марш всем солдатам данного подразделения
+    if unit_name not in units:
+        print(f"Подразделение '{unit_name}' не найдено!")
+        return
+
+    print(f"Подразделение '{unit_name}' начинает марш:")
+    for soldier in units[unit_name]:
+        march_soldier(soldier)
+    print(f"Подразделение '{unit_name}' закончило марш.\n")
+
+
+# Демонстрация
 if __name__ == "__main__":
-    # Создаём солдат
-    soldier1 = create_soldier("Дмитрий")
-    soldier2 = create_soldier("Пётр")
-    soldier3 = create_soldier("Владимир")
-    soldier4 = create_soldier("Михаил")
 
-    # Создаём взводы
+    # создаём солдат
+    s1 = create_soldier("Дмитрий")
+    s2 = create_soldier("Пётр")
+    s3 = create_soldier("Владимир")
+    s4 = create_soldier("Михаил")
+
+    # создаём подразделения
     platoon1 = create_unit("Взвод 1")
-    add_member(platoon1, soldier1)
-    add_member(platoon1, soldier2)
-
     platoon2 = create_unit("Взвод 2")
-    add_member(platoon2, soldier3)
-    add_member(platoon2, soldier4)
 
-    # Создаём роту
-    company = create_unit("Рота")
-    add_member(company, platoon1)
-    add_member(company, platoon2)
+    # добавляем солдат
+    add_soldier_to_unit(platoon1, s1)
+    add_soldier_to_unit(platoon1, s2)
 
-    # Команды
-    print("Команда для одного солдата:")
-    march(soldier1)
+    add_soldier_to_unit(platoon2, s3)
+    add_soldier_to_unit(platoon2, s4)
 
-    print("\nКоманда для взвода:")
-    march(platoon1)
+    # команды
+    print("Команда одному солдату:")
+    march_soldier(s1)
 
-    print("\nКоманда для всей роты:")
-    march(company)
+    print("\nКоманда взводу 1:")
+    march_unit(platoon1)
+
+    print("Команда взводу 2:")
+    march_unit(platoon2)
