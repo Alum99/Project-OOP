@@ -1,17 +1,13 @@
-# ==========================================
-# БАЗОВЫЙ КЛАСС
-# ==========================================
 # Персонал — общий класс для всех сотрудников.
-# Здесь определены общие свойства и методы.
 # Каждый наследник добавляет свои атрибуты и переопределяет методы.
 
 
 class Personnel: # Базовый класс персонал
 
-    def __init__(self, name, age, department): # Конструктор класса
-        self.name = name # имя сотрудника
-        self.age = age # возраст сотрудника
-        self.department = department # отдел, где работает сотрудник
+    def __init__(self, name, age, department):  # Конструктор класса
+        self.name = name                        # имя сотрудника
+        self.age = age                          # возраст сотрудника
+        self.department = department            # отдел, где работает сотрудник
 
     def get_info(self): # метод, возвращающий общую информацию о сотруднике
         return f"{self.name}, {self.age} лет, отдел: {self.department}"
@@ -22,14 +18,14 @@ class Personnel: # Базовый класс персонал
     def __str__(self): # Краткое представление объекта (для списка)
         return f"{self.get_type()}: {self.name}, {self.age} лет, отдел {self.department}"
 
-# Дочерние классы
 
-class HRPersonnel(Personnel):  # Кадровый служащий
+# Дочерние классы
+class HRPersonnel(Personnel):  # Кадровый служащий, наследует от Personnel
 
     def __init__(self, name, age, department, position, experience): # конструктор класса
-        super().__init__(name, age, department) # вызов конструктора базового класса для инициализации общих атрибутов
-        self.position = position # должность
-        self.experience = experience # стаж работы
+        super().__init__(name, age, department)     # super() — это ссылка на родительский (базовый) класс для инициализации общих атрибутов
+        self.position = position                    # должность
+        self.experience = experience                # стаж работы
 
     def get_info(self): # Переопределение метода (полиморфизм)
         return (f"Кадровый служащий: {self.name}\n"
@@ -42,14 +38,16 @@ class HRPersonnel(Personnel):  # Кадровый служащий
         return "Кадровый служащий"
 
 
+
 class Engineer(Personnel): # Инженер
 
     def __init__(self, name, age, department, specialty, projects): # конструктор инженера
         super().__init__(name, age, department) # инициализация общих атрибутов
-        self.specialty = specialty # специальность инженера
-        self.projects = projects # количество проектов
+        self.specialty = specialty              # специальность инженера
+        self.projects = projects                # количество проектов
 
-    def get_info(self):
+    def get_info(self): # Переопределение метода (полиморфизм - один и тот же метод (get_info()) может вести себя по-разному 
+                        # для разных классов, хотя вызывается одинаково)
         return (f"Инженер: {self.name}\n"
                 f"Возраст: {self.age}\n"
                 f"Отдел: {self.department}\n"
@@ -63,11 +61,11 @@ class Engineer(Personnel): # Инженер
 class AdminStaff(Personnel): # Административный персонал
 
     def __init__(self, name, age, department, role, work_hours): # конструктор
-        super().__init__(name, age, department)
-        self.role = role # роль
-        self.work_hours = work_hours # количество рабочих часов в неделю
+        super().__init__(name, age, department) # инициализация общих атрибутов
+        self.role = role                        # роль
+        self.work_hours = work_hours            # количество рабочих часов в неделю
 
-    def get_info(self):
+    def get_info(self): # Переопределение метода (полиморфизм)
         return (f"Административный персонал: {self.name}\n"
                 f"Возраст: {self.age}\n"
                 f"Отдел: {self.department}\n"
@@ -77,16 +75,16 @@ class AdminStaff(Personnel): # Административный персонал
     def get_type(self):
         return "Административный персонал"
 
-# Композиция - класс реестр
 
-class Registry: # Реестр сотрудников компании
+# Композиция - класс реестр
+class Registry: # Реестр сотрудников компании, он не наследует сотрудников, а содержит их как объекты — это и есть композиция.
 
     def __init__(self): # конструктор реестра
-        self.staff_list = []
+        self.staff_list = [] # создаётся пустой список, в котором будут храниться объекты сотрудников
 
     def add_person(self, person): # Добавить сотрудника в список
         self.staff_list.append(person)
-        print(f"{person.get_type()} '{person.name}' успешно добавлен!\n")
+        print(f"{person.get_type()} '{person.name}' успешно добавлен!\n") # метод get_type() полиморфизм, так как тип объекта зависит от класса
 
     def show_all(self): # Показать краткий список всех сотрудников
         if not self.staff_list: # если список пуст
@@ -108,6 +106,7 @@ class Registry: # Реестр сотрудников компании
 
 def main():
     registry = Registry() # экземпляр реестра
+    # объект Registry будет хранить всех сотрудников
 
     while True:
         print("=== РЕЕСТР ПЕРСОНАЛА ===")
