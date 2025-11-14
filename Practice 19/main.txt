@@ -6,16 +6,16 @@
 
 class Realtor: # класс риелтор: данные о риелторах, объект "Второго порядка"
 
-    def __init__(self, name, experience): # конструктор класса
-        # Атрибуты риэлтора
-        self.name = name              # ФИО риэлтора
-        self.experience = experience  # Стаж работы (в годах)
+    def __init__(self, name, experience):           # конструктор класса
+                                                    # Атрибуты риэлтора
+        self.name = name                            # ФИО риэлтора
+        self.experience = experience                # Стаж работы (в годах)
 
-    def __str__(self): # строковое представление объекта (Полиморфизм)
+    def __str__(self):                              # строковое представление объекта (Полиморфизм), для красивого вывода объекта.
         return f'Риэлтор: {self.name}, стаж {self.experience} лет'
 
 
-class Property: # класс объект недвижимости: список риелторов, объект "Первого порядка"
+class Property: # класс объект недвижимости: список риелторов, объект "Первого порядка".
 
     def __init__(self, address, property_type, price): # конструктор класса
         # Атрибуты недвижимости
@@ -24,23 +24,23 @@ class Property: # класс объект недвижимости: список
         self.price = price                  # Цена
         self.realtors = []                  # Агрегация: список риэлторов (один ОН может иметь нескольких риэлторов)
 
-    def add_realtor(self, realtor): # метод добавления риелтора к ОН (объекту недвижимости)
+    def add_realtor(self, realtor):         # метод добавления риелтора к ОН (объекту недвижимости)
         self.realtors.append(realtor)
 
-    def __str__(self): # строковое представление объекта (Полиморфизм)
+    def __str__(self):                      # строковое представление объекта (Полиморфизм)
         return f'Объект: {self.property_type}, адрес "{self.address}", цена {self.price} руб.'
 
 
-class RealEstateCompany: # фирма, содержит список объектов недвижимости, "Главный агрегат"
+class RealEstateCompany: # фирма, содержит список объектов недвижимости, "Главный агрегат" или объект "третьего порядка".
 
-    def __init__(self, name): # конструктор класса
-        self.name = name
-        self.properties = []  # Список объектов недвижимости
+    def __init__(self, name):               # конструктор класса
+        self.name = name                    # сохраняем её название
+        self.properties = []                # Список объектов недвижимости
 
-    def add_property(self, property_obj): # Добавление объектов недвижимости (ОН) в фирму
+    def add_property(self, property_obj):   # Добавление объектов недвижимости (ОН) в фирму
         self.properties.append(property_obj)
 
-    def __str__(self): # Строковое представление фирмы
+    def __str__(self):                      # Строковое представление фирмы
         return f'Фирма недвижимости: "{self.name}"'
 
 
@@ -82,30 +82,30 @@ class RealEstateRegistry: # Главное меню и логика, при ст
 
             realtor = Realtor(name, experience) # создаем риэлтора
 
-            # Выбор объекта недвижимости, куда добавить риэлтора из всех сущ сейчас
+             # Выбор объекта недвижимости, куда добавить риэлтора из всех сущ сейчас
             print("Доступные объекты:")
-            for i, prop in enumerate(self.company.properties):
+            for i, prop in enumerate(self.company.properties):        # нумерованный вывод всех объектов недвижимости в фирме
                 print(f"{i+1}. {prop}")
 
-            try:
-                index = int(input("Выберите объект (номер): ")) - 1
-                self.company.properties[index].add_realtor(realtor)
+            try: # для отлова ошибок (неправильный ввод пользователя)
+                index = int(input("Выберите объект (номер): ")) - 1   # Пользователь вводит номер объекта недвижимости
+                self.company.properties[index].add_realtor(realtor)   # добавляет риэлтора к выбранному объекту недвижимости
                 print(f"Риэлтор добавлен к объекту!")
             except (ValueError, IndexError):
-                print("Ошибка выбора объекта!")
+                print("Ошибка выбора объекта!") 
 
     def display_all(self): # 2. Вывод всех объектов фирмы
 
         print("\n--- Все объекты фирмы ---")
-        if not self.company.properties: # должен быть хотя бы 1 объект
+        if not self.company.properties:          # должен быть хотя бы 1 объект
             print("Объектов недвижимости нет.")
             return
 
         print(self.company) # имя фирмы
-        for prop in self.company.properties:
-            print(f"\n{prop}") # строковое представление Property (ОН)
-            if prop.realtors: # если есть риэлторы
-                for realtor in prop.realtors:
+        for prop in self.company.properties:      # перебор всех объектов недвижимости в фирме
+            print(f"\n{prop}")                    # Выводит каждый объект недвижимости как строку
+            if prop.realtors:                     # если есть риэлторы
+                for realtor in prop.realtors:     # перебор всех
                     print(f"  {realtor}")
             else:
                 print("  Риэлторов пока нет.")
@@ -113,7 +113,7 @@ class RealEstateRegistry: # Главное меню и логика, при ст
     def display_specific(self): # 3. Просмотр конкретного объекта (риэлтор или объект)
 
         print("\n--- Просмотр конкретного объекта ---")
-        if not self.company.properties:
+        if not self.company.properties:          # должен быть хотя бы 1 объект
             print("Объектов нет.")
             return
 
@@ -124,15 +124,16 @@ class RealEstateRegistry: # Главное меню и логика, при ст
 
         # Просмотр конкретного объекта недвижимости (ОН)
         if choice == "1":
-            for i, prop in enumerate(self.company.properties): # список объектов
+            for i, prop in enumerate(self.company.properties): # перебора всех объектов недвижимости в фирме 
+            # enumerate() - для перебора элементов последовательности с автоматическим присвоением им индекса
                 print(f"{i+1}. {prop}")
-
-            try:
-                index = int(input("Выберите объект: ")) - 1 # запрашиваем индекс
-                prop = self.company.properties[index] # берем соответств объект
-                print(f"\n{prop}")
-                if prop.realtors: # если есть риэлтор
-                    for realtor in prop.realtors:
+            
+            try: # для отлова ошибок (неправильный ввод пользователя)
+                index = int(input("Выберите объект: ")) - 1         # запрашиваем индекс
+                prop = self.company.properties[index]               # берем соответств объект
+                print(f"\n{prop}")                                  # выводим его строковое представление
+                if prop.realtors:                                   # если есть риэлтор
+                    for realtor in prop.realtors:                   # перебор и выводим с отступом
                         print(f"  {realtor}")
                 else:
                     print("  Риэлторов нет.")
@@ -141,11 +142,11 @@ class RealEstateRegistry: # Главное меню и логика, при ст
 
         # Просмотр конкретного риэлтора
         elif choice == "2":
-            all_realtors = [] # список всех риэлторов
-            for prop in self.company.properties: # собираем всех риэлторов из всех объектов в один список
+            all_realtors = []                         # список всех риэлторов
+            for prop in self.company.properties:      # собираем всех риэлторов из всех объектов в один список (для удобства)
                 all_realtors.extend(prop.realtors)
 
-            if not all_realtors: # если список пуст = риэлторов нет
+            if not all_realtors:                      # если список пуст = риэлторов нет
                 print("Риэлторов нет.")
                 return
 
@@ -154,8 +155,8 @@ class RealEstateRegistry: # Главное меню и логика, при ст
 
             try:
                 index = int(input("Выберите риэлтора: ")) - 1
-                print(f"\n{all_realtors[index]}") # строковое представление риэлтора
-            except (ValueError, IndexError): # обрабатывает неверный ввод
+                print(f"\n{all_realtors[index]}")       # строковое представление риэлтора
+            except (ValueError, IndexError):            # обрабатывает неверный ввод
                 print("Ошибка выбора риэлтора!")
 
 
