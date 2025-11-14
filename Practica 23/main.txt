@@ -1,29 +1,31 @@
-# Листовой элемент — отдельный солдат
-class Soldier: # класс представляет отдельного солдата
-    def __init__(self, name): # конструктор
-        self.name = name # имя солдата
+# Листовой элемент (Leaf)  — отдельный солдат
+class Soldier:                  # класс представляет отдельного солдата
+    def __init__(self, name):   # конструктор
+        self.name = name        # имя солдата
 
-    def march(self): # команда марш
+    def march(self):                     # команда марш
         print(f"{self.name} марширует!") # конкретный солдат выполняет команду
 
-# Компоновщик — подразделение (взвод, рота и т.д.)
+
+
+# Компоновщик (Composite) — подразделение (взвод, рота и т.д.)
 class Unit:
     def __init__(self, name):
-        self.name = name # название подразделения
-        self.members = [] # список дочерних
+        self.name = name      # название подразделения
+        self.members = []     # список дочерних (children: Component[])
 
-    def add(self, member): # добавляет элемент в список members
+    def add(self, member):    # добавляет элемент в список members
         self.members.append(member)
 
     def remove(self, member): # удаляет элемент из подразделения
         self.members.remove(member)
 
-    def march(self): # марш для компоновщика
+    def march(self):                # марш для компоновщика
         print(f"Подразделение '{self.name}' начинает марш:")
-        for member in self.members:
-            member.march()  # Рекурсивно вызываем march для всех членов
+        for member in self.members: # Рекурсивно вызываем march для всех членов (обход детей)
+            member.march()          # Делегирование
         print(f"Подразделение '{self.name}' закончил марш.\n")
-# одинаковая команда выполняется как для одного солдата, так и для группы.
+        # одинаковая команда выполняется как для одного солдата, так и для группы.
 
 
 # Демонстрация работы
